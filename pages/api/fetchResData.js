@@ -8,20 +8,19 @@ const unsplash = createApi({
 const fetchImages = async () => {
   const photos = await unsplash.search.getPhotos({
     query: "restaurants",
-    page: 1,
     perPage: 30,
   });
   const unsplashPhotos = photos.response.results;
   return unsplashPhotos.map((photo) => photo.urls["small"]);
 };
 
-export default async function fetchResData(latLong = "41.8781,-87.6298") {
+export default async function fetchResData(latLong = "27.72,85.33") {
   try {
     const unsplashImages = await fetchImages();
     const searchParams = new URLSearchParams({
-      query: "cafe",
+      query: "restaurants",
       ll: latLong,
-      limit: 3,
+      limit: 6,
     });
 
     const results = await fetch(

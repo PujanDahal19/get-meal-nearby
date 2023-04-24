@@ -29,7 +29,7 @@ export async function getStaticPaths() {
   });
   return {
     paths: paths,
-    fallback: true,
+    fallback: false,
   };
 }
 
@@ -44,9 +44,11 @@ const RestroPage = ({ resData }) => {
       </Link>
       <div className="flex flex-col justify-start items-start md:flex-row max-w-ful gap-10 px-20">
         <Image
-          className="object-cover mx-auto my-0 rounded-md"
-          src={resData.imgUrl || Img}
+          className="object-cover mx-auto my-0 rounded-md h-[400px]"
+          src={resData?.imgUrl || Img}
           alt="Image"
+          width={400}
+          height={0}
         />
 
         <div className="flex flex-col py-5 mx-auto my-0">
