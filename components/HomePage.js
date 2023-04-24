@@ -1,8 +1,12 @@
 import Image from "next/image";
 import Img from "../public/pizza.avif";
-import useLocation from "../hooks/getLocation";
+import useLocation from "@/hooks/getLocation";
 const HomePage = () => {
-  const { errMsg, loading, handleLocation } = useLocation();
+  const { errMsg, loading, handleGetLocation, latLong } = useLocation();
+  const handleClickLocation = () => {
+    handleGetLocation();
+    console.log(latLong);
+  };
   return (
     <>
       <div className="grid md:grid-cols-2 items-center px-16 max-w-full min-h-full gap-10 my-20">
@@ -18,17 +22,24 @@ const HomePage = () => {
               Accusantium voluptate doloremque rerum asperiores ipsa ipsum.
             </p>
           </div>
-          <button className="bg-yellow text-lg font-bold mt-8 px-3 py-2 rounded-sm text-primary">
+          <button
+            className="bg-yellow text-lg font-bold mt-8 px-3 py-2 rounded-sm text-primary"
+            onClick={() => handleClickLocation()}
+          >
             {loading ? "Loading..." : "Meal Near You"}
           </button>
+
+          {errMsg && (
+            <div className="text-lg text-yellow font-bold max-w-full pt-5">
+              {errMsg}
+            </div>
+          )}
         </div>
 
         <Image
           className="object-cover opacity-80 rounded-lg mx-auto my-0"
           src={Img}
           alt="image"
-          width={500}
-          height={400}
         />
       </div>
     </>

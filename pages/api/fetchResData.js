@@ -1,7 +1,8 @@
+import useLocation from "@/hooks/getLocation";
 import { createApi } from "unsplash-js";
 
 const unsplash = createApi({
-  accessKey: process.env.PHOTOS_API_KEY,
+  accessKey: "vMa6qG1_DXDDt2I1Kymk3bdt8zn4RHJ5qNRuQ6FGeEs",
 });
 
 const fetchImages = async () => {
@@ -14,12 +15,12 @@ const fetchImages = async () => {
   return unsplashPhotos.map((photo) => photo.urls["small"]);
 };
 
-export default async function fetchResData() {
+export default async function fetchResData(latLong = "41.8781,-87.6298") {
   try {
     const unsplashImages = await fetchImages();
     const searchParams = new URLSearchParams({
       query: "cafe",
-      ll: "41.8781,-87.6298",
+      ll: latLong,
       limit: 3,
     });
 

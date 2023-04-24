@@ -4,14 +4,13 @@ import Img from "../../public/pizza.avif";
 import fetchResData from "../api/fetchResData";
 
 export async function getStaticProps(staticProps) {
-  const params = staticProps.params;
-
   const resData = await fetchResData();
+
+  const params = staticProps.params;
 
   const newResData = resData.find((data) => {
     return data.fsq_id.toString() === params.id;
   });
-
   return {
     props: {
       resData: newResData ? newResData : {},
@@ -29,7 +28,7 @@ export async function getStaticPaths() {
     };
   });
   return {
-    paths,
+    paths: paths,
     fallback: true,
   };
 }
@@ -48,8 +47,6 @@ const RestroPage = ({ resData }) => {
           className="object-cover mx-auto my-0 rounded-md"
           src={resData.imgUrl || Img}
           alt="Image"
-          width={400}
-          height={400}
         />
 
         <div className="flex flex-col py-5 mx-auto my-0">
