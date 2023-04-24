@@ -1,12 +1,21 @@
 import Image from "next/image";
 import Img from "../public/pizza.avif";
 import useLocation from "@/hooks/getLocation";
+import { useEffect, useState } from "react";
+import fetchResData from "@/pages/api/fetchResData";
 const HomePage = () => {
   const { errMsg, loading, handleGetLocation, latLong } = useLocation();
-  const handleClickLocation = () => {
-    handleGetLocation();
-    console.log(latLong);
-  };
+  const [item, setItem] = useState();
+
+  useEffect(() => {
+    async function getMealLocation() {
+      const newResData = await fetchResData(latLong);
+      setItem(newResData);
+    }
+    getMealLocation();
+    console?.log(item);
+  }, [latLong]);
+
   return (
     <>
       <div className="grid md:grid-cols-2 items-center px-16 max-w-full min-h-full gap-10 my-20">
@@ -24,7 +33,7 @@ const HomePage = () => {
           </div>
           <button
             className="bg-yellow text-lg font-bold mt-8 px-3 py-2 rounded-sm text-primary"
-            onClick={() => handleClickLocation()}
+            onClick={handleGetLocation}
           >
             {loading ? "Loading..." : "Meal Near You"}
           </button>

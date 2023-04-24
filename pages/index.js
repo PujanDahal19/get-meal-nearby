@@ -14,10 +14,10 @@ export async function getStaticProps() {
 }
 
 export default function Home({ resData }) {
+  const { latLong } = useLocation();
   return (
     <div className="flex flex-col justify-between min-h-full max-w-full">
       <HomePage />
-
       <RestroInfo resData={resData} />
     </div>
   );
