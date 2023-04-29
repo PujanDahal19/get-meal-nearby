@@ -1,7 +1,7 @@
 import HomePage from "@/components/HomePage";
 import RestroInfo from "@/components/RestroInfo";
 import { LocationContext } from "@/hooks/locationContext";
-import fetchResData from "@/pages/api/fetchResData";
+import fetchResData from "@/lib/fetchResData";
 import { useContext, useEffect } from "react";
 
 export async function getStaticProps() {
