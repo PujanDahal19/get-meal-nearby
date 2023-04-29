@@ -1,58 +1,56 @@
-import Card from "@/components/Card";
 import HomePage from "@/components/HomePage";
 import RestroInfo from "@/components/RestroInfo";
-import useLocation from "@/hooks/getLocation";
+import { LocationContext } from "@/hooks/locationContext";
 import fetchResData from "@/pages/api/fetchResData";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 
 export async function getStaticProps() {
-  const resData = await fetchResData();
+  const restroData = await fetchResData();
   return {
     props: {
-      resData,
+      restroData,
     },
   };
 }
 
-export default function Home({ resData }) {
-  const { loading, errMsg, handleGetLocation, latLong } = useLocation();
-  const [item, setItem] = useState("");
+export default function Home({ restroData }) {
+  const { state, dispatch } = useContext(LocationContext);
+
+  const { resData } = state;
 
   useEffect(() => {
     async function getMealLocation() {
-      if (latLong) {
+      if (state.latLong) {
         try {
-          const newResData = await fetchResData(latLong);
-          console.log(newResData);
-          setItem(newResData);
+          const newResData = await fetchResData(state.latLong);
+          dispatch({
+            type: "SET_RES_DATA",
+            payload: { resData: newResData },
+          });
         } catch (err) {
           console.log(err);
         }
       }
     }
     getMealLocation();
-  }, [latLong]);
+  }, [state.latLong]);
 
   return (
     <div className="flex flex-col justify-between min-h-full max-w-full">
-      <HomePage
-        loading={loading}
-        handleGetLocation={handleGetLocation}
-        errMsg={errMsg}
-      />
-
-      {item.length > 0 && (
+      <HomePage />
+      {resData.length > 0 && (
         <>
           <div className="text-yellow text-4xl font-bold mx-auto my-0 py-10">
             Restaurants Near You
           </div>
-          <RestroInfo resData={item} />
+          <RestroInfo resData={resData} />
         </>
       )}
+
       <div className="text-yellow text-4xl font-bold mx-auto my-0 py-10">
-        {resData[0].location.locality} Restaurants
+        {resData[0]?.location.locality} Restaurants
       </div>
-      <RestroInfo resData={resData} />
+      <RestroInfo resData={restroData} />
     </div>
   );
 }

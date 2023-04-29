@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Img from "../public/pizza.avif";
+import useLocation from "@/hooks/getLocation";
 
-const HomePage = ({ loading, errMsg, handleGetLocation }) => {
+const HomePage = () => {
+  const { loading, errMsg, handleGetLocation } = useLocation();
   return (
     <>
       <div className="grid md:grid-cols-2 items-center px-16 max-w-full min-h-full gap-10 my-20">

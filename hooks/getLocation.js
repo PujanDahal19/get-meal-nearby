@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { LocationContext } from "./locationContext";
 
 const useLocation = () => {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-  const [latLong, setLatLong] = useState("");
+  // const [latLong, setLatLong] = useState("");
+
+  const { dispatch } = useContext(LocationContext);
 
   const success = (position) => {
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
 
-    setLatLong(`${latitude},${longitude}`);
+    // setLatLong(`${latitude},${longitude}`);
+    dispatch({
+      type: "SET_LAT_LONG",
+      payload: { latLong: `${latitude},${longitude}` },
+    });
     setLoading(false);
     setErrMsg("");
   };
@@ -32,7 +39,6 @@ const useLocation = () => {
   return {
     errMsg,
     loading,
-    latLong,
     handleGetLocation,
   };
 };

@@ -1,23 +1,35 @@
-const { createContext } = require("react");
+const { createContext, useReducer } = require("react");
 
-const LocationContext = createContext();
+export const LocationContext = createContext();
 
 const LocationProvider = ({ children }) => {
-  const { latLong } = useLocation();
-  const [newResData, setNewResData] = useState();
-
-  useEffect(() => {
-    const getLatLong = async () => {
-      if (latLong) {
-        const resData = await fetchResData(latLong);
-        setNewResData(resData);
+  const storeReducer = (state, action) => {
+    switch (action.type) {
+      case "SET_LAT_LONG": {
+        return { ...state, latLong: action.payload.latLong };
       }
-    };
+      case "SET_RES_DATA": {
+        return { ...state, resData: action.payload.resData };
+      }
+      default:
+        throw new Error("Unhandled action type");
+    }
+  };
 
-    getLatLong();
-  }, [latLong]);
+  const initialState = {
+    latLong: "",
+    resData: [],
+  };
+
+  const [state, dispatch] = useReducer(storeReducer, initialState);
+
   return (
-    <LocationContext.Provider value={{ newResData }}>
+    <LocationContext.Provider
+      value={{
+        state,
+        dispatch,
+      }}
+    >
       {children}
     </LocationContext.Provider>
   );

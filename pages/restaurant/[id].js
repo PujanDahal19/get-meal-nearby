@@ -1,16 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
 import Img from "../../public/pizza.avif";
-import fetchResData from "../api/fetchResData";
+
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
+import { LocationContext } from "@/hooks/locationContext";
+import { isEmpty } from "@/utils";
+import fetchResData from "@/lib/fetchResData";
 
 export async function getStaticProps(staticProps) {
-  const resData = await fetchResData();
-
   const params = staticProps.params;
+
+  const resData = await fetchResData();
 
   const newResData = resData.find((data) => {
     return data.fsq_id.toString() === params.id;
   });
+
   return {
     props: {
       resData: newResData ? newResData : {},
@@ -29,11 +35,38 @@ export async function getStaticPaths() {
   });
   return {
     paths: paths,
-    fallback: false,
+    fallback: true,
   };
 }
 
-const RestroPage = ({ resData }) => {
+const RestroPage = (initialProps) => {
+  const router = useRouter();
+  if (router.isFallback) {
+    return (
+      <div className="max-w-full min-h-full flex justify-center items-center text-3xl font-bold text-yellow">
+        Loading...
+      </div>
+    );
+  }
+
+  const id = router.query.id;
+
+  const [newResData, setNewResData] = useState(initialProps.resData);
+  const { state } = useContext(LocationContext);
+  const { resData } = state;
+
+  useEffect(() => {
+    if (isEmpty(initialProps.resData)) {
+      if (resData.length > 0) {
+        const findResDataById = resData.find((data) => {
+          return data.fsq_id.toString() === id;
+        });
+        setNewResData(findResDataById);
+      }
+    }
+    console.log(resData);
+  }, [id]);
+
   return (
     <div className="flex flex-col justify-center items-start min-h-screen max-w-ful gap-10">
       <Link
@@ -45,17 +78,21 @@ const RestroPage = ({ resData }) => {
       <div className="flex flex-col justify-start items-start md:flex-row max-w-ful gap-10 px-20">
         <Image
           className="object-cover mx-auto my-0 rounded-md h-[400px]"
-          src={resData?.imgUrl || Img}
+          src={newResData.imgUrl || Img}
           alt="Image"
           width={400}
           height={0}
         />
 
         <div className="flex flex-col py-5 mx-auto my-0">
-          <h1 className="font-semibold text-3xl text-yellow">{resData.name}</h1>
-          <h1 className="font-semibold text-xl text-yellow mx-auto my-0">
-            {resData.location.address}
+          <h1 className="font-semibold text-3xl text-yellow">
+            {newResData.name}
           </h1>
+          {newResData.location?.address && (
+            <h1 className="font-semibold text-xl text-yellow mx-auto my-0">
+              {newResData.location.address}
+            </h1>
+          )}
         </div>
       </div>
     </div>
