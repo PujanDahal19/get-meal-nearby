@@ -64,7 +64,6 @@ const RestroPage = (initialProps) => {
         setNewResData(findResDataById);
       }
     }
-    console.log(resData);
   }, [id]);
 
   return (

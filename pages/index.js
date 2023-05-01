@@ -22,7 +22,14 @@ export default function Home({ restroData }) {
     async function getMealLocation() {
       if (state.latLong) {
         try {
-          const newResData = await fetchResData(state.latLong);
+          const response = await fetch(
+            `/api/getDataByLocation?latLong=${state.latLong}&limit=6`
+          );
+
+          const newResData = await response.json();
+
+          console.log(newResData);
+
           dispatch({
             type: "SET_RES_DATA",
             payload: { resData: newResData },
